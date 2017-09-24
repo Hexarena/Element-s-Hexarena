@@ -19,7 +19,7 @@ public class BlockOj : MonoBehaviour {
 	void OnMouseEnter()
 	{
 		anim.SetInteger("Status", 1);
-		Debug.Log("Voo");
+		Debug.Log("Vo "+obj.name);
 	}
 
 	void OnMouseExit()
