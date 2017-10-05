@@ -4,81 +4,76 @@ using UnityEngine;
 
 public class BlockManage : MonoBehaviour {
 	public GameObject block;
-	int row1=7, row2 = 8 ,row3 = 9, row4 = 10,row5 = 11;
-	// Use this for initialization
-	Animator anim;
-	void Start () {
-		//hand = GameObject.Find("1:1");
-		//for (int i = 0; i < block.Length; i++)
-		//{
-		//	anim =block[i].GetComponent<Animator>();
-		//	anim.SetInteger("Color", 4);
-		//}
-		if (block != null)
-		{
-			for (int i = 0; i < row1; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-3 + (1 * i), 3), Quaternion.Euler(0, 0, 90));
-				a.name = (4+i)+":"+(i);
-				a.transform.parent = gameObject.transform;
-			}
-			for (int i = 0; i < row2; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-3.5f + (1 * i), 2.25f), Quaternion.Euler(0, 0, 90));
-				a.name = (3+i)+":" + (i);
-				a.transform.parent = gameObject.transform;
-			}
-			for (int i = 0; i < row3; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-4 + (1 * i), 1.5f), Quaternion.Euler(0, 0, 90));
-				a.name = (2+i)+":" + (i);
-				a.transform.parent = gameObject.transform;
-			}
-			for (int i = 0; i < row4; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-4.5f + (1 * i), 0.75f), Quaternion.Euler(0, 0, 90));
-				a.name = (1+i) +":" + (i);
-				a.transform.parent = gameObject.transform;
-			}
-			for (int i = 0; i < row5; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-5 + (1 * i), 0), Quaternion.Euler(0, 0, 90));
-				a.name = i+":" + (i);
-				a.transform.parent = gameObject.transform;
-			}
-			int j = 1;
-			for (int i = 0; i < row4; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-4.5f + (1 * i), -0.75f), Quaternion.Euler(0, 0, 90));
-				a.name = i+":" + (j); j++;
-				a.transform.parent = gameObject.transform;
-			}
-			j = 2;
-			for (int i = 0; i < row3; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-4 + (1 * i), -1.5f), Quaternion.Euler(0, 0, 90));
-				a.name = i+":" + (j); j++;
-				a.transform.parent = gameObject.transform;
-			}
-			j = 3;
-			for (int i = 0; i < row2; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-3.5f + (1 * i), -2.25f), Quaternion.Euler(0, 0, 90));
-				a.name = i+":" + (j); j++;
-				a.transform.parent = gameObject.transform;
-			}
-			j = 4;
-			for (int i = 0; i < row1; i++)
-			{
-				GameObject a = GameObject.Instantiate(block, new Vector2(-3 + (1 * i), -3), Quaternion.Euler(0, 0, 90));
-				a.name = i+":" + (j); j++;
-				a.transform.parent = gameObject.transform;
-			}
-		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    private byte[,] Invalid;
+
+    private static int width = 11;
+    private static int height = 9;
+
+    public static float yOffset = -0.735f;
+    public static float xOffset = 1f;
+    public static float col = -xOffset - xOffset / 2;
+
+    void SetValid()
+    {
+        Invalid = new byte[9, 11]
+        {
+            { 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
+        };
+    }
+    Animator anim;
+    void Start()
+    {
+        //hand = GameObject.Find("1:1");
+        //for (int i = 0; i < block.Length; i++)
+        //{
+        //	anim =block[i].GetComponent<Animator>();
+        //	anim.SetInteger("Color", 4);
+        //}
+        if (block != null)
+        {
+            SetValid();
+            for (int jj = 0; jj < height; jj++)
+            {
+                if ((jj % 2 == 0) && (jj != 0))
+                    col += xOffset;
+                for (int ii = 0; ii < width; ii++)
+                {
+                    if (Invalid[jj, ii] == 0)
+                    {
+                        GameObject hex_go;
+                        if (jj % 2 == 0)
+                        {
+                            hex_go = (GameObject)Instantiate(
+                                block,
+                                new Vector2(ii * xOffset - 5.5f + col, jj * yOffset - 7*yOffset / 2f),
+                                Quaternion.identity);
+                        }
+                        else
+                        {
+                            hex_go = (GameObject)Instantiate(
+                                block,
+                                new Vector2(ii * xOffset + xOffset / 2 - 5.5f + col, jj * yOffset - 7*yOffset / 2f),
+                                Quaternion.identity);
+                        }
+
+                        hex_go.name = "Base_" + ii + "_" + jj;
+                        hex_go.transform.SetParent(this.transform);
+                    }
+                }
+            }
+        }
+    }
+
+        // Update is called once per frame
+        void Update () {
 		
-	}
+	    }
 }
