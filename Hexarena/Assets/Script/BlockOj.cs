@@ -7,8 +7,8 @@ public class BlockOj : MonoBehaviour {
 	GameObject obj;
 	public byte This_x, This_y; //Position of this block
 	public BlockManage Manager; //The GameManage
-    public GameObject goFigure;
-	//bool isHasFigure = false;
+	public GameObject goFigure;
+	private byte Status = 2; //this Block's status (1: Has Figure; 2: Empty)
 
 	//Run once the object is created
 	void Start () {
@@ -33,13 +33,14 @@ public class BlockOj : MonoBehaviour {
 			byte Invalid = Manager.getBlockValid(This_x,This_y);
 			Debug.Log ("Invalid VALUE = " + Invalid);
 			//Perform action according to Invalid value
-			switch(Invalid){
+			switch(Status){
+			//Summon Figure when value is 2
 			case 2: 
-				//Summon Figure when value is 2
 					Instantiate (goFigure,
 						getPosition (),
 						Quaternion.identity)
 						.transform.SetParent (this.transform);
+					Status = 1;   //1: Has Figure
 					break;
 				//Otherwise
 				default: //Do something
