@@ -28,6 +28,11 @@ public class BlockManage : MonoBehaviour {
             { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
         };
     }
+
+	//Return the Invalid value of a block [x,y]
+	public byte getBlockValid(byte Pos_x, byte Pos_y){
+		return Invalid[Pos_x,Pos_y];
+	}
     Animator anim;
     void Start()
     {
