@@ -8,15 +8,26 @@ public class BlockManage : MonoBehaviour {
     //private byte[,] Invalid
     private static readonly byte[,] Invalid =
     {
-        { 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
+        // mod start nnvu Change Block Status Precreate
+        //{ 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
+        //{ 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+        //{ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        //{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        //{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        //{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        //{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
+        //{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 },
+        //{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
+        { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+        { 0, 0, 0, 4, 4, 1, 1, 1, 1, 8, 8},
+        { 0, 0, 4, 4, 4, 1, 1, 1, 8, 8, 8},
+        { 0, 4, 4, 4, 1, 1, 1, 1, 8, 8, 8},
+        { 4, 4, 4, 1, 1, 1, 1, 1, 8, 8, 8},
+        { 4, 4, 4, 1, 1, 1, 1, 8, 8, 8, 0},
+        { 4, 4, 4, 1, 1, 1, 8, 8, 8, 0, 0},
+        { 4, 4, 1, 1, 1, 1, 8, 8, 0, 0, 0},
+        { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
+        // mod end nnvu
     };
     // mod end nnvu
 
@@ -80,7 +91,10 @@ public class BlockManage : MonoBehaviour {
                     col += xOffset;
                 for (int ii = 0; ii < width; ii++)
                 {
-                    if (Invalid[jj, ii] == 0)
+                    // mod start nnvu Change Block Status Precreate
+                    // if (Invalid[jj, ii] == 0)
+                    if (Invalid[jj, ii] != 0)
+                    // mod end
                     {
                         GameObject hex_go;
                         // mod start nnvu Change How to create Base
@@ -107,6 +121,10 @@ public class BlockManage : MonoBehaviour {
                         // mod end nnvu
                         hex_go.name = "Base_" + ii + "_" + jj;
                         hex_go.transform.SetParent(this.transform);
+                        // add start nnvu set Status as create Block
+                        BlockOj hexScript = (BlockOj)hex_go.GetComponent(typeof(BlockOj));
+                        hexScript.SetStatus(Invalid[jj, ii]);
+                        // add end nnvu
                     }
                 }
             }
