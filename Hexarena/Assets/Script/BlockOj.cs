@@ -86,6 +86,7 @@ public class BlockOj : MonoBehaviour {
 	{
 		anim.SetInteger("Status", 1);//Change this block status
 		Debug.Log("Vo "+obj.name);
+        Debug.Log(Status.ToString());
 	}
 	//Mouse Exit the block
 	void OnMouseExit()
@@ -124,4 +125,11 @@ public class BlockOj : MonoBehaviour {
         return new Vector2(x, y);
     }
     // mod end nnvu
+
+    // add start nnvu set Status as create Block
+    public void SetStatus(int status)
+    {
+        Status = (BlockObjStatus)((int)Status | status);
+    }
+    // add end nnvu
 }
