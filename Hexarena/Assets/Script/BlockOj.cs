@@ -115,7 +115,7 @@ public class BlockOj : MonoBehaviour {
         var PosY = float.Parse(Name[2]);
         float x = PosX * xOffSet - 7.5f
             + (PosY/2) * xOffSet
-            + (PosY % 2) * xOffSet / 2f
+            //+ (PosY % 2) * xOffSet / 2f
             + xOffSet / 2;
 
         float y = PosY * yOffSet
