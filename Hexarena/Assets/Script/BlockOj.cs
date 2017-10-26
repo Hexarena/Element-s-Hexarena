@@ -1,27 +1,45 @@
-﻿using System.Collections;
+﻿using Assets.Script;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BlockOj : MonoBehaviour {
 	Animator anim;
 	GameObject obj;
-	public byte This_x, This_y; //Position of this block
-	public BlockManage Manager; //The GameManage
-	public GameObject goFigure;
-	private byte Status = 2; //this Block's status (1: Has Figure; 2: Empty)
+    // del start nnvu Delete This_x, This_y
+	// public byte This_x, This_y; //Position of this block
+    // del end nnvu
+
+    // del start nnvu Delete Manager
+	//public BlockManage Manager; //The GameManage
+    // del end
+
+	public GameObject Figure;
+    // add start nnvu Add xOffSet for create Figure
+    private static readonly float xOffSet = 1f;
+    private static readonly float yOffSet = -0.735f;
+    // add end nnvu
+    // mod start nnvu Change Status type
+    //private byte Status = 2; //this Block's status (1: Has Figure; 2: Empty)
+    private BlockObjStatus Status = BlockObjStatus.CanMove; // blank Block
+    // mod end nnvu Change Status type
 
 	//Run once the object is created
 	void Start () {
 		obj = gameObject;
 		//Find the GameManage, the controller of the game
-		Manager = GameObject.Find ("GameManage").GetComponent<BlockManage>();
+        // del start nnvu Delete Manager
+		//Manager = GameObject.Find ("GameManage").GetComponent<BlockManage>();
+        // del end nnvu
 		anim = GetComponent<Animator>();
 		anim = obj.GetComponent<Animator>();
 
 		//Find the position of this block for further usage
-		var FigureName = obj.name.Split('_');
-		This_x = (byte)(int)System.Double.Parse(FigureName[1]);
-		This_y = (byte)(int)System.Double.Parse(FigureName[2]);
+        // del start nnvu Delete This_x, This_y
+		//var FigureName = obj.name.Split('_');
+		//This_x = (byte)(int)System.Double.Parse(FigureName[1]);
+		//This_y = (byte)(int)System.Double.Parse(FigureName[2]);
+        // del end nnvu
 	}
 
 	//Mouse Stay in the block	
@@ -29,23 +47,37 @@ public class BlockOj : MonoBehaviour {
     {
 		//Receive left-click
 		if (Input.GetMouseButtonUp (0)) {
-			//Find this block's Invalid value from GameManage
-			byte Invalid = Manager.getBlockValid(This_x,This_y);
-			Debug.Log ("Invalid VALUE = " + Invalid);
-			//Perform action according to Invalid value
-			switch(Status){
-			//Summon Figure when value is 2
-			case 2: 
-					Instantiate (goFigure,
-						getPosition (),
-						Quaternion.identity)
-						.transform.SetParent (this.transform);
-					Status = 1;   //1: Has Figure
-					break;
-				//Otherwise
-				default: //Do something
-					break;
-			}
+            //Find this block's Invalid value from GameManage
+            // del start nnvu Delete get block Valid from game manager
+            //byte Invalid = Manager.getBlockValid(This_x,This_y);
+            //Debug.Log ("Invalid VALUE = " + Invalid);
+            // del end nnvu
+            //Perform action according to Invalid value
+            // del start nnvu remove Switch case
+            //         switch (status){
+            ////Summon Figure when value is 2
+            //case : 
+            //		Instantiate (Figure,
+            //			GetPosition (),
+            //			Quaternion.identity);
+            //		status = 1;   //1: Has Figure
+            //		break;
+            //	//Otherwise
+            //	default: //Do something
+            //		break;
+            //}
+            // del end nnvu
+
+            // add start nnvu Add figure Create
+            if ((BlockObjStatus.HasFigure & Status) == 0)
+            {
+                Instantiate(
+                    Figure,
+                    GetPosition(),
+                    Quaternion.identity);
+                Status = Status | BlockObjStatus.HasFigure;
+            }
+            // add end nnvu
 		}
     }
 
@@ -62,14 +94,34 @@ public class BlockOj : MonoBehaviour {
 		Debug.Log("Raa");
 	}
 
-	Vector2 getPosition()
-	{
-		float x = This_x * BlockManage.xOffset - 10.5f 
-					+ BlockManage.xOffset * (This_y / 2f) 
-					+ BlockManage.xOffset;
-		
-		float y = This_x * BlockManage.yOffset
-					- 7 * BlockManage.yOffset / 2f;
-		return new Vector2(x, y);
-	}
+    // mod start nnvu Modify GetPosition
+    //Vector2 GetPosition()
+    //{
+    //    float x = This_x * BlockManage.xOffset - 10.5f
+    //                + BlockManage.xOffset * (This_y / 2f)
+    //                + BlockManage.xOffset;
+
+    //    float y = This_x * BlockManage.yOffset
+    //                - 7 * BlockManage.yOffset / 2f;
+    //    return new Vector2(x, y);
+    //}
+    // mod start nnvu Change Method GetPosition to public
+    // Vector2 GetPosition()
+    public Vector2 GetPosition()
+    // mod end nnvu
+    {
+        var Name = obj.name.Split('_');
+        var PosX = float.Parse(Name[1]);
+        var PosY = float.Parse(Name[2]);
+        float x = PosX * xOffSet - 7.5f
+            + (PosY/2) * xOffSet
+            + (PosY % 2) * xOffSet / 2f
+            + xOffSet / 2;
+
+        float y = PosY * yOffSet
+            + 2f
+            - yOffSet * 1.5f;
+        return new Vector2(x, y);
+    }
+    // mod end nnvu
 }
