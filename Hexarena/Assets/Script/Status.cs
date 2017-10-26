@@ -10,8 +10,8 @@ namespace Assets.Script
         NONE = 0,
         HasFigure = 1,
         CanMove = 2,
-        RedBlock = 4,
-        GreenBlock = 8,
+        RedBlock = 8,
+        GreenBlock = 4,
         StatusCount = 6
     }
 }
