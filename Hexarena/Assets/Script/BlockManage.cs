@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockManage : MonoBehaviour {
-	public GameObject block;
+public class BlockManage : MonoBehaviour
+{
+    public GameObject block;
     private byte[,] Invalid;
 
     private static int width = 11;
@@ -53,14 +54,14 @@ public class BlockManage : MonoBehaviour {
                         {
                             hex_go = (GameObject)Instantiate(
                                 block,
-                                new Vector2(ii * xOffset - 5.5f + col, jj * yOffset - 7*yOffset / 2f),
+                                new Vector2(ii * xOffset - 5.5f + col, jj * yOffset - 7 * yOffset / 2f + 0.8f),
                                 Quaternion.identity);
                         }
                         else
                         {
                             hex_go = (GameObject)Instantiate(
                                 block,
-                                new Vector2(ii * xOffset + xOffset / 2 - 5.5f + col, jj * yOffset - 7*yOffset / 2f),
+                                new Vector2(ii * xOffset + xOffset / 2 - 5.5f + col, jj * yOffset - 7 * yOffset / 2f + 0.8f),
                                 Quaternion.identity);
                         }
 
@@ -72,8 +73,9 @@ public class BlockManage : MonoBehaviour {
         }
     }
 
-        // Update is called once per frame
-        void Update () {
-		
-	    }
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 }
