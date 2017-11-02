@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockManage : MonoBehaviour {
-	public GameObject block;
+public class BlockManage : MonoBehaviour
+{
+    public GameObject block;
     // mod start nnvu Change Invalid to static const
     //private byte[,] Invalid
     private static readonly byte[,] Invalid =
@@ -66,9 +67,10 @@ public class BlockManage : MonoBehaviour {
     // del end nnvu remove SetInvalid
 
     //Return the Invalid value of a block [x,y]
-    public byte getBlockValid(byte Pos_x, byte Pos_y){
-		return Invalid[Pos_x,Pos_y];
-	}
+    public byte getBlockValid(byte Pos_x, byte Pos_y)
+    {
+        return Invalid[Pos_x, Pos_y];
+    }
     // del start nnvu Delete amin
     //Animator anim;
     // del end nnvu
@@ -115,8 +117,8 @@ public class BlockManage : MonoBehaviour {
                         hex_go = (GameObject)Instantiate(
                             block,
                             new Vector2(
-                                ii *xOffset - 5.5f + col + (jj % 2) * xOffset / 2f,
-                                jj * yOffset + 3f),
+                                ii * xOffset - 5.5f + col + (jj % 2) * xOffset / 2f,
+                                jj * yOffset + 3f + 0.6f),
                             Quaternion.identity);
                         // mod end nnvu
                         hex_go.name = "Base_" + ii + "_" + jj;
@@ -131,8 +133,9 @@ public class BlockManage : MonoBehaviour {
         }
     }
 
-        // Update is called once per frame
-        void Update () {
-		
-	    }
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 }
