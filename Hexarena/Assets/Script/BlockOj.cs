@@ -7,6 +7,7 @@ public class BlockOj : MonoBehaviour
 {
     Animator anim;
     GameObject obj;
+	GameObject fig;
     // del start nnvu Delete This_x, This_y
     // public byte This_x, This_y; //Position of this block
     // del end nnvu
@@ -72,14 +73,46 @@ public class BlockOj : MonoBehaviour
             // del end nnvu
 
             // add start nnvu Add figure Create
-            if ((BlockObjStatus.HasFigure & Status) == 0)
+			if ((BlockObjStatus.HasFigure & Status) == 0 && BlockManage.isClick == 0)
             {
-                Instantiate(
+				fig = (GameObject) Instantiate(
                     Figure,
                     GetPosition(),
                     Quaternion.identity);
                 Status = Status | BlockObjStatus.HasFigure;
+				fig.name = "figure";
+				fig.transform.SetParent(this.transform);
+				Debug.Log(Status);
             }
+            else if ( Status.ToString() != "3" && BlockManage.isClick == 0)
+             {
+ 
+                 BlockManage.isClick = 1;
+                 anim.SetInteger("Status", 2);
+ 
+                 Debug.Log("chon " + obj.name);
+                 BlockManage.priBlock = obj;
+                 BlockManage.priFigure = fig ;
+             }
+             else if ((Status.ToString() == "11" || Status.ToString() == "7" || Status == BlockObjStatus.HasFigure) && BlockManage.isClick == 1)
+             {
+                 BlockManage.isClick = 0;
+                 returnColor();
+                 Debug.Log("khong the di chuyen " + obj.name);
+             }
+             else if ((Status.ToString() != "11" && Status.ToString() != "7" && Status.ToString() != "1") && BlockManage.isClick == 1)
+             {
+                 BlockManage.priFigure.transform.position= GetPosition();
+                 if  (Status.ToString() == "3")
+                 {
+                     Status = Status & BlockObjStatus.HasFigure;
+                 }
+                 else Status = Status | BlockObjStatus.HasFigure;
+                 Debug.Log("di chuyen " + obj.name);
+                 BlockManage.isClick = 0;
+                 returnColor();
+            
+             }
             // add end nnvu
         }
     }
@@ -135,4 +168,11 @@ public class BlockOj : MonoBehaviour
         Status = (BlockObjStatus)((int)Status | status);
     }
     // add end nnvu
+
+	void returnColor()
+	{
+	        Animator Anim;
+	        Anim = BlockManage.priBlock.GetComponent<Animator>();
+	        Anim.SetInteger("Status", 0);
+	}
 }
