@@ -45,6 +45,19 @@ public class BlockOj : MonoBehaviour
         // del end nnvu
     }
 
+    void OnMouseDown()
+    {
+        if ((BlockObjStatus.HasFigure & Status) == 0)
+        {
+            Instantiate(
+                Figure,
+                GetPosition(),
+                Quaternion.identity);
+            Status = Status | BlockObjStatus.HasFigure;
+        }
+    }
+    /* Should use OnMouseDown (above) instead? - PrInc3 
+
     //Mouse Stay in the block	
     private void OnMouseOver()
     {
@@ -115,7 +128,7 @@ public class BlockOj : MonoBehaviour
              }
             // add end nnvu
         }
-    }
+    } */
 
     //Mouse Enter the block
     void OnMouseEnter()
