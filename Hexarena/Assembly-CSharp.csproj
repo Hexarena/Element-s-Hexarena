@@ -48,6 +48,10 @@
   <ItemGroup>
      <Compile Include="Assets\Script\BlockManage.cs" />
      <Compile Include="Assets\Script\BlockOj.cs" />
+     <Compile Include="Assets\Script\CardController.cs" />
+     <Compile Include="Assets\Script\CardManager.cs" />
+     <Compile Include="Assets\Script\DrawManager.cs" />
+     <Compile Include="Assets\Script\Status.cs" />
      <Compile Include="Assets\Script\testarray.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
