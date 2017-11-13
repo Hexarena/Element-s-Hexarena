@@ -8,6 +8,8 @@ public class BlockOj : MonoBehaviour
     Animator anim;
     GameObject obj;
 	GameObject fig;
+    public static GameObject priBlock;
+    public static GameObject priFigure;
     // del start nnvu Delete This_x, This_y
     // public byte This_x, This_y; //Position of this block
     // del end nnvu
@@ -25,7 +27,7 @@ public class BlockOj : MonoBehaviour
     //private byte Status = 2; //this Block's status (1: Has Figure; 2: Empty)
     private BlockObjStatus Status = BlockObjStatus.CanMove; // blank Block
                                                             // mod end nnvu Change Status type
-
+    public BlockObjStatus status{ get; set; }
     //Run once the object is created
     void Start()
     {
@@ -45,18 +47,18 @@ public class BlockOj : MonoBehaviour
         // del end nnvu
     }
 
-    void OnMouseDown()
-    {
-        if ((BlockObjStatus.HasFigure & Status) == 0)
-        {
-            Instantiate(
-                Figure,
-                GetPosition(),
-                Quaternion.identity);
-            Status = Status | BlockObjStatus.HasFigure;
-        }
-    }
-    /* Should use OnMouseDown (above) instead? - PrInc3 
+    //void OnMouseDown()
+    //{
+    //    if ((BlockObjStatus.HasFigure & Status) == 0)
+    //    {
+    //        Instantiate(
+    //            Figure,
+    //            GetPosition(),
+    //            Quaternion.identity);
+    //        Status = Status | BlockObjStatus.HasFigure;
+    //    }
+    //}
+    /* Should use OnMouseDown (above) instead? - PrInc3 */
 
     //Mouse Stay in the block	
     private void OnMouseOver()
@@ -87,7 +89,7 @@ public class BlockOj : MonoBehaviour
 
             // add start nnvu Add figure Create
 			if ((BlockObjStatus.HasFigure & Status) == 0 && BlockManage.isClick == 0)
-            {
+              {
 				fig = (GameObject) Instantiate(
                     Figure,
                     GetPosition(),
@@ -96,7 +98,7 @@ public class BlockOj : MonoBehaviour
 				fig.name = "figure";
 				fig.transform.SetParent(this.transform);
 				Debug.Log(Status);
-            }
+              }
             else if ( Status.ToString() != "3" && BlockManage.isClick == 0)
              {
  
@@ -104,8 +106,8 @@ public class BlockOj : MonoBehaviour
                  anim.SetInteger("Status", 2);
  
                  Debug.Log("chon " + obj.name);
-                 BlockManage.priBlock = obj;
-                 BlockManage.priFigure = fig ;
+                 priBlock = obj;
+                 priFigure = fig ;
              }
              else if ((Status.ToString() == "11" || Status.ToString() == "7" || Status == BlockObjStatus.HasFigure) && BlockManage.isClick == 1)
              {
@@ -115,33 +117,46 @@ public class BlockOj : MonoBehaviour
              }
              else if ((Status.ToString() != "11" && Status.ToString() != "7" && Status.ToString() != "1") && BlockManage.isClick == 1)
              {
-                 BlockManage.priFigure.transform.position= GetPosition();
-                 if  (Status.ToString() == "3")
+                returnColor();
+                priFigure.transform.position = GetPosition();
+                fig = priFigure;        
+                priFigure = null;
+                BlockOj hexScript = (BlockOj) priBlock.GetComponent(typeof(BlockOj)); //set lại status cho prj chọn trước đó,
+                hexScript.SetStatusMove(1);    
+                if  (Status.ToString() == "3") // trường hợp những ô không nằm trong vùng triệu hồi quân, 
+                    //có giá trị là 3, thì khi dùng lệnh Status = Status | BlockObjStatus.HasFigure sẽ vẫn có giá trị là 3
+                    //nên ta đổi sang phép tính khác để trả về 1 giá trị khác là 1
                  {
                      Status = Status & BlockObjStatus.HasFigure;
                  }
-                 else Status = Status | BlockObjStatus.HasFigure;
-                 Debug.Log("di chuyen " + obj.name);
-                 BlockManage.isClick = 0;
-                 returnColor();
+                else Status = Status | BlockObjStatus.HasFigure;
+                Debug.Log("di chuyen " + obj.name);
+                BlockManage.isClick = 0;
+                
             
              }
             // add end nnvu
         }
-    } */
+    }
 
     //Mouse Enter the block
     void OnMouseEnter()
     {
-        anim.SetInteger("Status", 1);//Change this block status
-        Debug.Log("Vo " + obj.name);
-        Debug.Log(Status.ToString());
+        if (BlockManage.isClick == 0)
+        {
+            anim.SetInteger("Status", 1);//Change this block status
+            Debug.Log("Vo " + obj.name);
+            Debug.Log(Status.ToString());
+        }
     }
     //Mouse Exit the block
     void OnMouseExit()
     {
-        anim.SetInteger("Status", 0);//Change this block status
-        Debug.Log("Raa");
+        if (BlockManage.isClick == 0)
+        {
+            anim.SetInteger("Status", 0);//Change this block status
+            Debug.Log("Raa");
+        }
     }
 
     // mod start nnvu Modify GetPosition
@@ -180,12 +195,23 @@ public class BlockOj : MonoBehaviour
     {
         Status = (BlockObjStatus)((int)Status | status);
     }
+    public void SetStatusMove(int status)   //hàm set Status không trùng với hàm dùng trong BlockManage
+    {
+        if(Status==BlockObjStatus.HasFigure)    // khi prj nằm ở vị trí không thể triệu hồi được quân cờ,
+        {
+            status = 3;                         
+            Status = (BlockObjStatus)((int)Status | status);
+            // khi dùng lệnh Status = (BlockObjStatus)((int)Status ^ status); thì Status=0, làm prj có thể triệu hồi quân cờ được
+            //nhưng prj đó nằm ở vị trí không thể triệu hồi cờ, nên statu=3, đổi phép tính sang | để Status=3, tức là không thể triệu hồi cờ
+        }
+        else Status = (BlockObjStatus)((int)Status ^ status);
+    }
     // add end nnvu
 
 	void returnColor()
 	{
 	        Animator Anim;
-	        Anim = BlockManage.priBlock.GetComponent<Animator>();
+	        Anim = priBlock.GetComponent<Animator>();
 	        Anim.SetInteger("Status", 0);
 	}
 }
