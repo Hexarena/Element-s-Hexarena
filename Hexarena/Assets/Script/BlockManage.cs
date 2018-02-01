@@ -6,8 +6,6 @@ public class BlockManage : MonoBehaviour
 {
     public GameObject block;
 	public static int isClick = 0;
-	public static GameObject priBlock;
-	public static GameObject priFigure;
     // mod start nnvu Change Invalid to static const
     //private byte[,] Invalid
     private static readonly byte[,] Invalid =
