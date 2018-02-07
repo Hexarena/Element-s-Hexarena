@@ -29,8 +29,8 @@ public class BlockOj : MonoBehaviour
                                                             // mod end nnvu Change Status type
     public BlockObjStatus status{ get; set; }
 
-	private int[] AffectedBlocks = new int[200]; //Tọa độ những ô bị thay đổi màu (lưu kiểu X * 100 + Y)
-	public int countAffectedBlocks = 0;
+	private int[] AffectedBlocks = new int [6]; //Tọa độ những ô bị thay đổi màu (lưu kiểu X * 10 + Y)
+   
 	//Run once the object is created
     void Start()
     {
@@ -109,8 +109,17 @@ public class BlockOj : MonoBehaviour
 
 				//Tìm tọa độ các ô cần thay màu
 				var Name = obj.name.Split('_');
-				SetAffectedBlocks(int.Parse(Name[1]),int.Parse(Name[2]), 1); //Giá trị truyền vào sau là bán kính
-				Debug.Log ("So O: " + countAffectedBlocks);
+				var PosX = int.Parse(Name[1]);
+				var PosY = int.Parse(Name[2]);
+				int countBlocks= 0;
+				for (int i = -1; i <= 1; i++) {
+					for (int j = 0; j <= 1; j++) {
+						AffectedBlocks[countBlocks] = (PosX - j * i) * 10 + (PosY + i);
+						countBlocks++;
+					}
+				}				
+				AffectedBlocks[2] = (PosX - 1) * 10 + PosY;
+				AffectedBlocks[3] = (PosX + 1) * 10 + PosY;
 				//Đổi màu các ô đã chọn
 				ChangeColor(AffectedBlocks,2);
 
@@ -232,36 +241,14 @@ public class BlockOj : MonoBehaviour
 	        Anim.SetInteger("Status", 0);
 	}
 
-	void SetAffectedBlocks(int X, int Y, int Radius) {
-		if (Radius == 0){
-			int tmpInt = X * 100 + Y;
-			//Check if the Block is already in the array
-			for (int i = 0; i < countAffectedBlocks; i++) {
-				if (AffectedBlocks[i] == tmpInt) {
-					return;
-				}
-			}
-			AffectedBlocks[countAffectedBlocks] = tmpInt;
-			countAffectedBlocks++;
-		}
-		else{
-			for (int i = -1; i <= 1; i++) {
-				for (int j = 0; j <= 1; j++) {
-					SetAffectedBlocks(X - j * i, Y + i, Radius-1);
-				}
-			}	
-			SetAffectedBlocks(X - 1, Y, Radius-1);
-			SetAffectedBlocks(X + 1, Y, Radius-1);
-		}
-	}
 	//Đổi màu các ô có tọa độ (kiểu X*10+Y) lưu trong mảng Blocks thành StatusValue
 	void ChangeColor(int[] Blocks, int StatusValue){
-		Debug.Log ("-- Changing --- " + gameObject.name);
-		//Debug.Log ("Doi mau sang "+StatusValue+": "+(AffectedBlocks[0])+" "+(AffectedBlocks[1])+" "+(AffectedBlocks[2])+
-		//	" "+(AffectedBlocks[3])+" "+(AffectedBlocks[4])+" "+(AffectedBlocks[5]));
-		for (int i = 0; i < countAffectedBlocks; i++) {
-			Debug.Log (Blocks [i] / 100 + " " + Blocks [i] % 100);
-			string BlkName = "Base_" + Blocks[i]/100 + "_" + Blocks[i]%100;
+		//Debug.Log ("-- Changing --- " + gameObject.name);
+		Debug.Log ("Doi mau sang "+StatusValue+": "+(AffectedBlocks[0])+" "+(AffectedBlocks[1])+" "+(AffectedBlocks[2])+
+			" "+(AffectedBlocks[3])+" "+(AffectedBlocks[4])+" "+(AffectedBlocks[5]));
+		for (int i = 0; i < Blocks.Length; i++) {
+			//Debug.Log (Blocks [i] / 10 + " " + Blocks [i] % 10);
+			string BlkName = "Base_" + Blocks[i]/10 + "_" + Blocks[i]%10;
 			Animator TmpAnim = null;
 			try {
 				TmpAnim = GameObject.Find (BlkName).GetComponent<Animator> ();
