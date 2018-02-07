@@ -28,7 +28,10 @@ public class BlockOj : MonoBehaviour
     private BlockObjStatus Status = BlockObjStatus.CanMove; // blank Block
                                                             // mod end nnvu Change Status type
     public BlockObjStatus status{ get; set; }
-    //Run once the object is created
+
+	private int[] AffectedBlocks = new int [6]; //Tọa độ những ô bị thay đổi màu (lưu kiểu X * 10 + Y)
+   
+	//Run once the object is created
     void Start()
     {
         obj = gameObject;
@@ -36,7 +39,7 @@ public class BlockOj : MonoBehaviour
         // del start nnvu Delete Manager
         //Manager = GameObject.Find ("GameManage").GetComponent<BlockManage>();
         // del end nnvu
-        anim = GetComponent<Animator>();
+        //anim = GetComponent<Animator>();
         anim = obj.GetComponent<Animator>();
 
         //Find the position of this block for further usage
@@ -101,10 +104,25 @@ public class BlockOj : MonoBehaviour
               }
             else if ( Status.ToString() != "3" && BlockManage.isClick == 0)
              {
- 
                  BlockManage.isClick = 1;
                  anim.SetInteger("Status", 2);
- 
+
+				//Tìm tọa độ các ô cần thay màu
+				var Name = obj.name.Split('_');
+				var PosX = int.Parse(Name[1]);
+				var PosY = int.Parse(Name[2]);
+				int countBlocks= 0;
+				for (int i = -1; i <= 1; i++) {
+					for (int j = 0; j <= 1; j++) {
+						AffectedBlocks[countBlocks] = (PosX - j * i) * 10 + (PosY + i);
+						countBlocks++;
+					}
+				}				
+				AffectedBlocks[2] = (PosX - 1) * 10 + PosY;
+				AffectedBlocks[3] = (PosX + 1) * 10 + PosY;
+				//Đổi màu các ô đã chọn
+				ChangeColor(AffectedBlocks,2);
+
                  Debug.Log("chon " + obj.name);
                  priBlock = obj;
                  priFigure = fig ;
@@ -113,6 +131,12 @@ public class BlockOj : MonoBehaviour
              {
                  BlockManage.isClick = 0;
                  returnColor();
+				 anim.SetInteger ("Status", 1);
+
+				//Chỉnh lại màu cho các ô màu đỏ trước đó
+				BlockOj tmpBlkObj = priBlock.GetComponent<BlockOj> ();
+				tmpBlkObj.ChangeColor (tmpBlkObj.AffectedBlocks,0);
+
                  Debug.Log("khong the di chuyen " + obj.name);
              }
              else if ((Status.ToString() != "11" && Status.ToString() != "7" && Status.ToString() != "1") && BlockManage.isClick == 1)
@@ -129,11 +153,14 @@ public class BlockOj : MonoBehaviour
                  {
                      Status = Status & BlockObjStatus.HasFigure;
                  }
-                else Status = Status | BlockObjStatus.HasFigure;
+				else Status = Status | BlockObjStatus.HasFigure;
+
+				//Chỉnh lại màu cho các ô màu đỏ trước đó
+				BlockOj tmpBlkObj = priBlock.GetComponent<BlockOj> ();
+				tmpBlkObj.ChangeColor (tmpBlkObj.AffectedBlocks,0);
+
                 Debug.Log("di chuyen " + obj.name);
                 BlockManage.isClick = 0;
-                
-            
              }
             // add end nnvu
         }
@@ -152,11 +179,10 @@ public class BlockOj : MonoBehaviour
     //Mouse Exit the block
     void OnMouseExit()
     {
-        if (BlockManage.isClick == 0)
-        {
-            anim.SetInteger("Status", 0);//Change this block status
-            Debug.Log("Raa");
-        }
+		if (BlockManage.isClick == 0) {
+			anim.SetInteger ("Status", 0);//Change this block status
+			Debug.Log ("Raa");
+		}
     }
 
     // mod start nnvu Modify GetPosition
@@ -213,5 +239,23 @@ public class BlockOj : MonoBehaviour
 	        Animator Anim;
 	        Anim = priBlock.GetComponent<Animator>();
 	        Anim.SetInteger("Status", 0);
+	}
+
+	//Đổi màu các ô có tọa độ (kiểu X*10+Y) lưu trong mảng Blocks thành StatusValue
+	void ChangeColor(int[] Blocks, int StatusValue){
+		//Debug.Log ("-- Changing --- " + gameObject.name);
+		Debug.Log ("Doi mau sang "+StatusValue+": "+(AffectedBlocks[0])+" "+(AffectedBlocks[1])+" "+(AffectedBlocks[2])+
+			" "+(AffectedBlocks[3])+" "+(AffectedBlocks[4])+" "+(AffectedBlocks[5]));
+		for (int i = 0; i < Blocks.Length; i++) {
+			//Debug.Log (Blocks [i] / 10 + " " + Blocks [i] % 10);
+			string BlkName = "Base_" + Blocks[i]/10 + "_" + Blocks[i]%10;
+			Animator TmpAnim = null;
+			try {
+				TmpAnim = GameObject.Find (BlkName).GetComponent<Animator> ();
+				TmpAnim.SetInteger ("Status", StatusValue);
+			}
+			catch{
+			}
+		}
 	}
 }
