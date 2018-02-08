@@ -108,8 +108,8 @@ public class BlockOj : MonoBehaviour
                  anim.SetInteger("Status", 2);
 
 				//Tìm tọa độ các ô cần thay màu
-				var Name = obj.name.Split('_');
-				SetAffectedBlocks(int.Parse(Name[1]),int.Parse(Name[2]), 1); //Giá trị truyền vào sau là bán kính
+				string[] Name = obj.name.Split('_');
+				SetAffectedBlocks(int.Parse(Name[1]),int.Parse(Name[2]), 3); //Giá trị truyền vào sau là bán kính
 				Debug.Log ("So O: " + countAffectedBlocks);
 				//Đổi màu các ô đã chọn
 				ChangeColor(AffectedBlocks,2);
@@ -131,7 +131,21 @@ public class BlockOj : MonoBehaviour
                  Debug.Log("khong the di chuyen " + obj.name);
              }
              else if ((Status.ToString() != "11" && Status.ToString() != "7" && Status.ToString() != "1") && BlockManage.isClick == 1)
-             {
+			{
+				//Kiểm tra xem có thể di chuyển Figure ơơơđến ô đã chơọn khơông
+				BlockOj tmpBlkObj = priBlock.GetComponent<BlockOj> ();
+				bool CanMove = false;
+				string[] Name = obj.name.Split('_');
+				for (int i = 0; i < tmpBlkObj.countAffectedBlocks; i++) {
+					if (tmpBlkObj.AffectedBlocks[i] == (int.Parse(Name[1])*100+int.Parse(Name[2]))) {
+						CanMove = true;
+					}
+				}
+				if (!(CanMove)) {
+					Debug.Log ("Qua gioi han di chuyen");
+					return;
+				}
+
                 returnColor();
                 priFigure.transform.position = GetPosition();
                 fig = priFigure;        
@@ -147,7 +161,6 @@ public class BlockOj : MonoBehaviour
 				else Status = Status | BlockObjStatus.HasFigure;
 
 				//Chỉnh lại màu cho các ô màu đỏ trước đó
-				BlockOj tmpBlkObj = priBlock.GetComponent<BlockOj> ();
 				tmpBlkObj.ChangeColor (tmpBlkObj.AffectedBlocks,0);
 
                 Debug.Log("di chuyen " + obj.name);
